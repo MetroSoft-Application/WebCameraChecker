@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WebCameraChecker</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Roboto', sans-serif;
+            }
+
+            body {
+                background-color: #f0f0f0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                font-weight: 300;
+                margin-bottom: 20px;
+                color: #3c3c3c;
+            }
+
+            a {
+                text-decoration: none;
+                font-weight: 400;
+                color: #3c3c3c;
+                margin-bottom: 10px;
+            }
+
+            a:hover {
+                color: #007bff;
+            }
+
+            input[type="button"] {
+                font-size: 1.1rem;
+                font-weight: 400;
+                padding: 8px 16px;
+                background-color: #007bff;
+                color: #ffffff;
+                border: none;
+                border-radius: 4px;
+                margin-bottom: 10px;
+                cursor: pointer;
+            }
+
+            input[type="button"]:hover {
+                background-color: #0056b3;
+            }
+
+            p {
+                font-size: 1.2rem;
+                font-weight: 300;
+                margin-bottom: 10px;
+                color: #3c3c3c;
+            }
+
+            select {
+                font-size: 1.1rem;
+                padding: 6px 10px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                margin-bottom: 20px;
+            }
+
+            .download {
+                display: inline-block;
+                padding: 8px 16px;
+                background-color: #28a745;
+                color: #ffffff;
+                border-radius: 4px;
+                margin-bottom: 10px;
+            }
+
+            .download:hover {
+                background-color: #218838;
+            }
+
+            #video {
+                width: 640px;
+                height: 480px;
+                background-color: #ffffff;
+                border-radius: 8px;
+                padding: 20px;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+                margin-bottom: 20px;
+            }
+
+            .container {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .left-column {
+                flex: 1;
+                padding: 20px;
+            }
+
+            .right-column {
+                flex: 1;
+                padding: 20px;
+            }
+        </style>
+        <script src="StopWatch.js"></script>
+        <script src="VideoManager.js"></script>
+    </head>
+
+    <body>
+        <h1>WebCameraChecker</h1>
+        <div class="container">
+            <div class="left-column">
+                <p>Audio</p>
+                <select id="Audio">
+                </select><br />
+                <input type="button" id="ExecButton" value="Exec" onclick="OnExec();" /><br />
+                <input type="button" id="StopButton" value="Stop" onclick="OnStop();" /><br />
+                <input type="button" id="ReverseButton" value="Reverse" onclick="OnReverse();" /><br />
+                <!--<input type="button" id="RightButton" value="Right" onclick="OnRightRotate();" /><br />
+                <input type="button" id="LeftButton" value="Left" onclick="OnLeftRotate();" /><br />-->
+                <input type="button" id="RecButton" value="Rec" onclick="OnRec();" /><br />
+                <a href="" id="Downloadlink" class="download">Download</a>
+            </div>
+            <div class="right-column">
+                <video id="video"></video>
+                <p id="time"> 00:00:00</p>
+            </div>
+        </div>
+        <script>
+            let anchor = document.getElementById('Downloadlink');
+            anchor.href = "javascript:void(0)";
+            let videoM = new VideoManager();
+
+            function GetValueByID(ID) {
+                let val = document.getElementById(ID).value;
+                return val;
+            }
+
+            function audioSetting() {
+                let audio = document.getElementById('Audio');
+                let audioSelect = { Disable: 0, Enable: 1 };
+                Object.keys(audioSelect).forEach(function (key) {
+                    let opt = document.createElement('option');
+                    opt.setAttribute('value', audioSelect[key]);
+                    opt.innerHTML = key;
+                    audio.appendChild(opt);
+                })
+                audio.selectedIndex = 0;
+            }
+
+            function OnExec() {
+                if (videoM.stm == null) {
+                    videoM.GetVideo(Boolean(Number(GetValueByID('Audio'))));
+                }
+            }
+
+            function OnStop() {
+                if (videoM.stm != null) {
+                    videoM.StopVideo();
+                    Stop();
+                }
+            }
+
+            function OnReverse() {
+                videoM.Rotate(180);
+            }
+
+            function OnRightRotate() {
+                videoM.Rotate(-90);
+            }
+
+            function OnLeftRotate() {
+                videoM.Rotate(90);
+            }
+
+            function OnRec() {
+                if (videoM.stm == null) { return; }
+                TimeClear();
+                anchor.href = "javascript:void(0)";
+                videoM.Recoading();
+                Start();
+            }
+
+            window.addEventListener('load', audioSetting);
+        </script>
+    </body>
+
+</html>
