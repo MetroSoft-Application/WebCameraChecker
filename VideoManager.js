@@ -1,14 +1,18 @@
-class VideoManager {
+class VideoManager
+{
     video = null;
     nowAngle = 0;
     stm = null;
     recorder = null;
     recordedChunks = [];
-    constructor() {
+    constructor()
+    {
     }
 
-    async GetVideo(isAudioEnable) {
-        try {
+    async GetVideo(isAudioEnable)
+    {
+        try
+        {
             this.video = document.getElementById("video");
             this.stm = await navigator.mediaDevices.getUserMedia({
                 audio: isAudioEnable,
@@ -17,27 +21,32 @@ class VideoManager {
             this.video.srcObject = this.stm;
             this.video.play();
             return true;
-        } catch (e) {
+        } catch (e)
+        {
             console.log(e);
             return false;
         }
     }
 
-    StopVideo() {
-        if (this.recorder != null) {
+    StopVideo()
+    {
+        if (this.recorder != null)
+        {
             this.recorder.stop();
             return true;
         }
         return false;
     }
 
-    Rotate(cmdAngle) {
+    Rotate(cmdAngle)
+    {
         if (this.video == null) { return; }
         this.nowAngle = this.nowAngle + cmdAngle;
         this.video.style.transform = "rotate(" + this.nowAngle + "deg)";
     }
 
-    Download() {
+    Download()
+    {
         let blob = new Blob(this.recordedChunks, {
             type: "video/webm"
         });
@@ -47,24 +56,29 @@ class VideoManager {
         anchor.download = this.GetNowYMDhmsStr() + ".webm";
     }
 
-    Recoading() {
+    Recoading()
+    {
         if (this.stm == null) { return; }
         this.recorder = new MediaRecorder(this.stm, {
             audioBitsPerSecond: 16 * 1000
         });
         this.recordedChunks = [];
-        this.recorder.addEventListener('dataavailable', function (event) {
-            if (event.data.size > 0) {
+        this.recorder.addEventListener('dataavailable', function (event)
+        {
+            if (event.data.size > 0)
+            {
                 this.recordedChunks.push(event.data);
             }
         }.bind(this));
         this.recorder.start();
-        this.recorder.addEventListener('stop', function (event) {
+        this.recorder.addEventListener('stop', function (event)
+        {
             this.Download();
         }.bind(this));
     }
 
-    GetNowYMDhmsStr() {
+    GetNowYMDhmsStr()
+    {
         const date = new Date()
         const Y = date.getFullYear()
         const M = ("00" + (date.getMonth() + 1)).slice(-2)

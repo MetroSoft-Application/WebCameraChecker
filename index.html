@@ -120,19 +120,23 @@
         <div class="container">
             <div class="left-column">
                 <p>Audio</p>
-                <select id="Audio">
-                </select><br />
-                <input type="button" id="ExecButton" value="Exec" onclick="OnExec();" /><br />
-                <input type="button" id="StopButton" value="Stop" onclick="OnStop();" /><br />
-                <input type="button" id="ReverseButton" value="Reverse" onclick="OnReverse();" /><br />
+                <select id="Audio"> </select>
+                <br />
+                <input type="button" id="ExecButton" value="Exec" onclick="OnExec();" />
+                <br />
+                <input type="button" id="StopButton" value="Stop" onclick="OnStop();" />
+                <br />
+                <input type="button" id="ReverseButton" value="Reverse" onclick="OnReverse();" />
+                <br />
                 <!--<input type="button" id="RightButton" value="Right" onclick="OnRightRotate();" /><br />
                 <input type="button" id="LeftButton" value="Left" onclick="OnLeftRotate();" /><br />-->
-                <input type="button" id="RecButton" value="Rec" onclick="OnRec();" /><br />
+                <input type="button" id="RecButton" value="Rec" onclick="OnRec();" />
+                <br />
                 <a href="" id="Downloadlink" class="download">Download</a>
             </div>
             <div class="right-column">
                 <video id="video"></video>
-                <p id="time"> 00:00:00</p>
+                <p id="time">00:00:00</p>
             </div>
         </div>
         <script>
@@ -140,15 +144,17 @@
             anchor.href = "javascript:void(0)";
             let videoM = new VideoManager();
 
-            function GetValueByID(ID) {
-                let val = document.getElementById(ID).value;
-                return val;
+            function GetValueByID(ID)
+            {
+                return document.getElementById(ID).value;
             }
 
-            function audioSetting() {
+            function AudioSetting()
+            {
                 let audio = document.getElementById('Audio');
                 let audioSelect = { Disable: 0, Enable: 1 };
-                Object.keys(audioSelect).forEach(function (key) {
+                Object.keys(audioSelect).forEach(function (key)
+                {
                     let opt = document.createElement('option');
                     opt.setAttribute('value', audioSelect[key]);
                     opt.innerHTML = key;
@@ -157,32 +163,40 @@
                 audio.selectedIndex = 0;
             }
 
-            function OnExec() {
-                if (videoM.stm == null) {
+            function OnExec()
+            {
+                if (videoM.stm == null)
+                {
                     videoM.GetVideo(Boolean(Number(GetValueByID('Audio'))));
                 }
             }
 
-            function OnStop() {
-                if (videoM.stm != null) {
+            function OnStop()
+            {
+                if (videoM.stm != null)
+                {
                     videoM.StopVideo();
                     Stop();
                 }
             }
 
-            function OnReverse() {
+            function OnReverse()
+            {
                 videoM.Rotate(180);
             }
 
-            function OnRightRotate() {
+            function OnRightRotate()
+            {
                 videoM.Rotate(-90);
             }
 
-            function OnLeftRotate() {
+            function OnLeftRotate()
+            {
                 videoM.Rotate(90);
             }
 
-            function OnRec() {
+            function OnRec()
+            {
                 if (videoM.stm == null) { return; }
                 TimeClear();
                 anchor.href = "javascript:void(0)";
@@ -190,7 +204,7 @@
                 Start();
             }
 
-            window.addEventListener('load', audioSetting);
+            window.addEventListener('load', AudioSetting);
         </script>
     </body>
 
