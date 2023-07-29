@@ -14,7 +14,8 @@ var AddZero = function (value)
 
 function TimeClear()
 {
-    document.getElementById('time').innerHTML = '00' + ':' + '00' + ':' + '00';
+    Stop();
+    document.getElementById('time').innerText = '00' + ':' + '00' + ':' + '00';
 }
 
 var GoTimer = function ()
@@ -37,7 +38,7 @@ var GoTimer = function ()
     minutes = AddZero(minutes);
 
     //document.getElementById('time').innerHTML = hours + ':' + minutes + ':' + seconds + "." + milli;
-    document.getElementById('time').innerHTML = hours + ':' + minutes + ':' + seconds;
+    document.getElementById('time').innerText = hours + ':' + minutes + ':' + seconds;
 }
 
 function Start()

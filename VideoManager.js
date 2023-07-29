@@ -30,17 +30,18 @@ class VideoManager
 
     StopVideo()
     {
-        if (this.recorder != null)
-        {
-            this.recorder.stop();
-            return true;
-        }
-        return false;
+        this.stm = null;
+        this.video.srcObject = null;
     }
+
+
 
     Rotate(cmdAngle)
     {
-        if (this.video == null) { return; }
+        if (this.video == null)
+        {
+            return;
+        }
         this.nowAngle = this.nowAngle + cmdAngle;
         this.video.style.transform = "rotate(" + this.nowAngle + "deg)";
     }
@@ -58,7 +59,10 @@ class VideoManager
 
     Recoading()
     {
-        if (this.stm == null) { return; }
+        if (this.stm == null)
+        {
+            return;
+        }
         this.recorder = new MediaRecorder(this.stm, {
             audioBitsPerSecond: 16 * 1000
         });
@@ -75,6 +79,16 @@ class VideoManager
         {
             this.Download();
         }.bind(this));
+    }
+
+    StopRecoading()
+    {
+        if (this.recorder != null)
+        {
+            this.recorder.stop();
+            return true;
+        }
+        return false;
     }
 
     GetNowYMDhmsStr()

@@ -58,6 +58,13 @@
                 background-color: #0056b3;
             }
 
+            /* 無効化されたボタンのスタイルを上書き */
+            input[type="button"]:disabled {
+                background-color: #ccc;
+                color: #888;
+                cursor: not-allowed;
+            }
+
             p {
                 font-size: 1.2rem;
                 font-weight: 300;
@@ -124,14 +131,14 @@
                 <br />
                 <input type="button" id="ExecButton" value="Exec" onclick="OnExec();" />
                 <br />
-                <input type="button" id="StopButton" value="Stop" onclick="OnStop();" />
-                <br />
                 <input type="button" id="ReverseButton" value="Reverse" onclick="OnReverse();" />
+                <br />
+                <input type="button" id="RecButton" value="Rec" onclick="OnRec();" />
+                <br />
+                <input type="button" id="StopButton" value="Stop" onclick="OnStop();" />
                 <br />
                 <!--<input type="button" id="RightButton" value="Right" onclick="OnRightRotate();" /><br />
                 <input type="button" id="LeftButton" value="Left" onclick="OnLeftRotate();" /><br />-->
-                <input type="button" id="RecButton" value="Rec" onclick="OnRec();" />
-                <br />
                 <a href="" id="Downloadlink" class="download">Download</a>
             </div>
             <div class="right-column">
@@ -142,11 +149,17 @@
         <script>
             let anchor = document.getElementById('Downloadlink');
             anchor.href = "javascript:void(0)";
-            let videoM = new VideoManager();
+            let videoM = null;
 
             function GetValueByID(ID)
             {
                 return document.getElementById(ID).value;
+            }
+
+            function EnableTargetButton(buttonName, enable)
+            {
+                let stopBtn = document.getElementById(buttonName);
+                stopBtn.disabled = !enable;
             }
 
             function AudioSetting()
@@ -168,6 +181,16 @@
                 if (videoM.stm == null)
                 {
                     videoM.GetVideo(Boolean(Number(GetValueByID('Audio'))));
+                    EnableTargetButton("StopButton", false);
+                    EnableTargetButton("ReverseButton", true);
+                    EnableTargetButton("RecButton", true);
+                } else
+                {
+                    videoM.StopVideo();
+                    EnableTargetButton("StopButton", false);
+                    EnableTargetButton("ReverseButton", false);
+                    EnableTargetButton("RecButton", false);
+                    TimeClear();
                 }
             }
 
@@ -175,9 +198,11 @@
             {
                 if (videoM.stm != null)
                 {
-                    videoM.StopVideo();
+                    videoM.StopRecoading();
                     Stop();
                 }
+                EnableTargetButton("StopButton", false);
+                EnableTargetButton("RecButton", true);
             }
 
             function OnReverse()
@@ -197,14 +222,28 @@
 
             function OnRec()
             {
-                if (videoM.stm == null) { return; }
+                if (videoM.stm == null)
+                {
+                    return;
+                }
                 TimeClear();
                 anchor.href = "javascript:void(0)";
                 videoM.Recoading();
                 Start();
+                EnableTargetButton("StopButton", true);
+                EnableTargetButton("RecButton", false);
             }
 
-            window.addEventListener('load', AudioSetting);
+            function Init()
+            {
+                videoM = new VideoManager();
+                EnableTargetButton("StopButton", false);
+                EnableTargetButton("ReverseButton", false);
+                EnableTargetButton("RecButton", false);
+                AudioSetting();
+            }
+
+            window.addEventListener('load', Init);
         </script>
     </body>
 
