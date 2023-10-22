@@ -133,6 +133,9 @@
                 <br />
                 <input type="button" id="ReverseButton" value="Reverse" onclick="OnReverse();" />
                 <br />
+                <input type="button" id="MirrorButton" value="Mirror" onclick="OnMirror();" />
+                <br />
+                <br />
                 <input type="button" id="RecButton" value="Rec" onclick="OnRec();" />
                 <br />
                 <input type="button" id="StopButton" value="Stop" onclick="OnStop();" />
@@ -183,12 +186,14 @@
                     videoM.GetVideo(Boolean(Number(GetValueByID('Audio'))));
                     EnableTargetButton("StopButton", false);
                     EnableTargetButton("ReverseButton", true);
+                    EnableTargetButton("MirrorButton", true);
                     EnableTargetButton("RecButton", true);
                 } else
                 {
                     videoM.StopVideo();
                     EnableTargetButton("StopButton", false);
                     EnableTargetButton("ReverseButton", false);
+                    EnableTargetButton("MirrorButton", false);
                     EnableTargetButton("RecButton", false);
                     TimeClear();
                 }
@@ -203,6 +208,11 @@
                 }
                 EnableTargetButton("StopButton", false);
                 EnableTargetButton("RecButton", true);
+            }
+
+            function OnMirror()
+            {
+                videoM.ToggleMirror();
             }
 
             function OnReverse()
@@ -239,6 +249,7 @@
                 videoM = new VideoManager();
                 EnableTargetButton("StopButton", false);
                 EnableTargetButton("ReverseButton", false);
+                EnableTargetButton("MirrorButton", false);
                 EnableTargetButton("RecButton", false);
                 AudioSetting();
             }

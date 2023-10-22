@@ -5,6 +5,7 @@ class VideoManager
     stm = null;
     recorder = null;
     recordedChunks = [];
+    isMirrored = false;
     constructor()
     {
     }
@@ -34,7 +35,23 @@ class VideoManager
         this.video.srcObject = null;
     }
 
-
+    ToggleMirror()
+    {
+        if (this.video == null)
+        {
+            return;
+        }
+        this.isMirrored = !this.isMirrored;
+        if (this.isMirrored)
+        {
+            // X軸で反転
+            this.video.style.transform = `rotate(${this.nowAngle}deg) scaleX(-1)`;
+        }
+        else
+        {
+            this.video.style.transform = `rotate(${this.nowAngle}deg)`;
+        }
+    }
 
     Rotate(cmdAngle)
     {
@@ -43,7 +60,15 @@ class VideoManager
             return;
         }
         this.nowAngle = this.nowAngle + cmdAngle;
-        this.video.style.transform = "rotate(" + this.nowAngle + "deg)";
+        if (this.isMirrored)
+        {
+            // ミラー反転の状態を保持
+            this.video.style.transform = `rotate(${this.nowAngle}deg) scaleX(-1)`;
+        }
+        else
+        {
+            this.video.style.transform = `rotate(${this.nowAngle}deg)`;
+        }
     }
 
     Download()
