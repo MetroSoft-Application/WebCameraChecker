@@ -131,6 +131,9 @@
                 <br />
                 <input type="button" id="ExecButton" value="Exec" onclick="OnExec();" />
                 <br />
+                <br />
+                <input type="button" id="SnapshotButton" value="Snapshot" onclick="OnSnapshot();" />
+                <br />
                 <input type="button" id="ReverseButton" value="Reverse" onclick="OnReverse();" />
                 <br />
                 <input type="button" id="MirrorButton" value="Mirror" onclick="OnMirror();" />
@@ -183,15 +186,19 @@
             {
                 if (videoM.stm == null)
                 {
+                    // カメラ起動
                     videoM.GetVideo(Boolean(Number(GetValueByID('Audio'))));
-                    EnableTargetButton("StopButton", false);
+                    EnableTargetButton("StopButton", false); // 起動時は非活性にしておく
+                    EnableTargetButton("SnapshotButton", true);
                     EnableTargetButton("ReverseButton", true);
                     EnableTargetButton("MirrorButton", true);
                     EnableTargetButton("RecButton", true);
                 } else
                 {
+                    // カメラ停止
                     videoM.StopVideo();
                     EnableTargetButton("StopButton", false);
+                    EnableTargetButton("SnapshotButton", false);
                     EnableTargetButton("ReverseButton", false);
                     EnableTargetButton("MirrorButton", false);
                     EnableTargetButton("RecButton", false);
@@ -244,10 +251,43 @@
                 EnableTargetButton("RecButton", false);
             }
 
+            function OnSnapshot()
+            {
+                if (videoM.stm == null)
+                {
+                    return;
+                }
+
+                let dataUrl = videoM.TakeSnapshot();
+                if (!dataUrl)
+                {
+                    return;  // スナップショットの取得に失敗した場合は終了
+                }
+
+                // DataURLからBlobを作成
+                let binary = atob(dataUrl.split(',')[1]);
+                let array = [];
+                for (let i = 0; i < binary.length; i++)
+                {
+                    array.push(binary.charCodeAt(i));
+                }
+                let blob = new Blob([new Uint8Array(array)], { type: 'image/png' });
+
+                // Blobを使用してダウンロードリンクを生成
+                let link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = videoM.GetNowYMDhmsStr() + ".png";
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
             function Init()
             {
                 videoM = new VideoManager();
                 EnableTargetButton("StopButton", false);
+                EnableTargetButton("SnapshotButton", false);
                 EnableTargetButton("ReverseButton", false);
                 EnableTargetButton("MirrorButton", false);
                 EnableTargetButton("RecButton", false);

@@ -39,6 +39,7 @@ class VideoManager
     {
         if (this.video == null)
         {
+            console.error("Video not initialized.");
             return;
         }
         this.isMirrored = !this.isMirrored;
@@ -57,6 +58,7 @@ class VideoManager
     {
         if (this.video == null)
         {
+            console.error("Video not initialized.");
             return;
         }
         this.nowAngle = this.nowAngle + cmdAngle;
@@ -71,15 +73,33 @@ class VideoManager
         }
     }
 
-    Download()
+    TakeSnapshot()
     {
-        let blob = new Blob(this.recordedChunks, {
-            type: "video/webm"
-        });
-        let url = URL.createObjectURL(blob);
-        let anchor = document.getElementById('Downloadlink');
-        anchor.href = url;
-        anchor.download = this.GetNowYMDhmsStr() + ".webm";
+        if (!this.video)
+        {
+            console.error("Video not initialized.");
+            return null;
+        }
+
+        // canvas要素を作成して、videoの映像をそこに描画
+        let canvas = document.createElement('canvas');
+        canvas.width = this.video.videoWidth;
+        canvas.height = this.video.videoHeight;
+        let ctx = canvas.getContext('2d');
+
+        // ミラーリングや回転を考慮して描画
+        ctx.save();
+        if (this.isMirrored)
+        {
+            ctx.scale(-1, 1);
+            ctx.translate(-canvas.width, 0);
+        }
+        ctx.rotate(this.nowAngle * Math.PI / 180);
+        ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        // canvasの内容をDataURLとして返す
+        return canvas.toDataURL('image/png');
     }
 
     Recoading()
@@ -116,6 +136,17 @@ class VideoManager
         return false;
     }
 
+    Download()
+    {
+        let blob = new Blob(this.recordedChunks, {
+            type: "video/webm"
+        });
+        let url = URL.createObjectURL(blob);
+        let anchor = document.getElementById('Downloadlink');
+        anchor.href = url;
+        anchor.download = this.GetNowYMDhmsStr() + ".webm";
+    }
+
     GetNowYMDhmsStr()
     {
         const date = new Date()
@@ -125,7 +156,6 @@ class VideoManager
         const h = ("00" + date.getHours()).slice(-2)
         const m = ("00" + date.getMinutes()).slice(-2)
         const s = ("00" + date.getSeconds()).slice(-2)
-
         return Y + M + D + h + m + s
     }
 }
