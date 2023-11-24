@@ -129,6 +129,9 @@
                 <p>Audio</p>
                 <select id="Audio"> </select>
                 <br />
+                <p>CameraDevice</p>
+                <select id="VideoDevice"></select>
+                <br />
                 <input type="button" id="ExecButton" value="Exec" onclick="OnExec();" />
                 <br />
                 <br />
@@ -162,7 +165,7 @@
                 return document.getElementById(ID).value;
             }
 
-            function EnableTargetButton(buttonName, enable)
+            function EnableTarget(buttonName, enable)
             {
                 let stopBtn = document.getElementById(buttonName);
                 stopBtn.disabled = !enable;
@@ -182,26 +185,54 @@
                 audio.selectedIndex = 0;
             }
 
+            async function VideoDeviceSetting()
+            {
+                let videoSelect = document.getElementById('VideoDevice');
+
+                try
+                {
+                    const devices = await navigator.mediaDevices.enumerateDevices();
+                    for (let device of devices)
+                    {
+                        if (device.kind === 'videoinput')
+                        {
+                            let opt = document.createElement('option');
+                            opt.value = device.deviceId;
+                            opt.textContent = device.label || `Camera ${videoSelect.options.length + 1}`;
+                            videoSelect.appendChild(opt);
+                        }
+                    }
+                    videoSelect.selectedIndex = 0;
+                } catch (error)
+                {
+                    console.error('Error: ', error);
+                }
+            }
+
             function OnExec()
             {
+                EnableTarget("StopButton", false);
                 if (videoM.stm == null)
                 {
                     // カメラ起動
-                    videoM.GetVideo(Boolean(Number(GetValueByID('Audio'))));
-                    EnableTargetButton("StopButton", false); // 起動時は非活性にしておく
-                    EnableTargetButton("SnapshotButton", true);
-                    EnableTargetButton("ReverseButton", true);
-                    EnableTargetButton("MirrorButton", true);
-                    EnableTargetButton("RecButton", true);
+                    videoM.GetVideo(Boolean(Number(GetValueByID('Audio'))), GetValueByID('VideoDevice'));
+                    EnableTarget("SnapshotButton", true);
+                    EnableTarget("ReverseButton", true);
+                    EnableTarget("MirrorButton", true);
+                    EnableTarget("RecButton", true);
+                    EnableTarget("Audio", false);
+                    EnableTarget("VideoDevice", false);
                 } else
                 {
                     // カメラ停止
                     videoM.StopVideo();
-                    EnableTargetButton("StopButton", false);
-                    EnableTargetButton("SnapshotButton", false);
-                    EnableTargetButton("ReverseButton", false);
-                    EnableTargetButton("MirrorButton", false);
-                    EnableTargetButton("RecButton", false);
+                    EnableTarget("StopButton", false);
+                    EnableTarget("SnapshotButton", false);
+                    EnableTarget("ReverseButton", false);
+                    EnableTarget("MirrorButton", false);
+                    EnableTarget("RecButton", false);
+                    EnableTarget("Audio", true);
+                    EnableTarget("VideoDevice", true);
                     TimeClear();
                 }
             }
@@ -213,8 +244,8 @@
                     videoM.StopRecoading();
                     Stop();
                 }
-                EnableTargetButton("StopButton", false);
-                EnableTargetButton("RecButton", true);
+                EnableTarget("StopButton", false);
+                EnableTarget("RecButton", true);
             }
 
             function OnMirror()
@@ -247,8 +278,8 @@
                 anchor.href = "javascript:void(0)";
                 videoM.Recoading();
                 Start();
-                EnableTargetButton("StopButton", true);
-                EnableTargetButton("RecButton", false);
+                EnableTarget("StopButton", true);
+                EnableTarget("RecButton", false);
             }
 
             function OnSnapshot()
@@ -286,12 +317,13 @@
             function Init()
             {
                 videoM = new VideoManager();
-                EnableTargetButton("StopButton", false);
-                EnableTargetButton("SnapshotButton", false);
-                EnableTargetButton("ReverseButton", false);
-                EnableTargetButton("MirrorButton", false);
-                EnableTargetButton("RecButton", false);
+                EnableTarget("StopButton", false);
+                EnableTarget("SnapshotButton", false);
+                EnableTarget("ReverseButton", false);
+                EnableTarget("MirrorButton", false);
+                EnableTarget("RecButton", false);
                 AudioSetting();
+                VideoDeviceSetting();
             }
 
             window.addEventListener('load', Init);

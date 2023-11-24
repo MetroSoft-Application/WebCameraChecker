@@ -10,14 +10,14 @@ class VideoManager
     {
     }
 
-    async GetVideo(isAudioEnable)
+    async GetVideo(isAudioEnable, videoDeviceId)
     {
         try
         {
             this.video = document.getElementById("video");
             this.stm = await navigator.mediaDevices.getUserMedia({
                 audio: isAudioEnable,
-                video: true
+                video: { deviceId: videoDeviceId }
             });
             this.video.srcObject = this.stm;
             this.video.play();
