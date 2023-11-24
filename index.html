@@ -118,8 +118,6 @@
                 padding: 20px;
             }
         </style>
-        <script src="StopWatch.js"></script>
-        <script src="VideoManager.js"></script>
     </head>
 
     <body>
@@ -158,6 +156,8 @@
                 <p id="time">00:00:00</p>
             </div>
         </div>
+        <script src="StopWatch.js"></script>
+        <script src="VideoManager.js"></script>
         <script>
             let anchor = document.getElementById('Downloadlink');
             anchor.href = "javascript:void(0)";
@@ -344,7 +344,7 @@
                 ResolutionSetting();
             }
 
-            window.addEventListener('load', Init);
+            document.addEventListener('DOMContentLoaded', Init);
             document.getElementById('ResolutionSelect').addEventListener('change', function ()
             {
                 let videoElement = document.getElementById('video');
