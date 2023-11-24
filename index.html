@@ -191,15 +191,25 @@
             function ResolutionSetting()
             {
                 let resolutions = document.getElementById('ResolutionSelect');
-                let resolutionsSelect = { '640x480': '640x480', '800x600': '800x600', '1280x720': '800x600' };
-                Object.keys(resolutionsSelect).forEach(function (key)
+                let resolutionOptions = [
+                    '320x240',
+                    '480x360',
+                    '640x480',
+                    '800x600',
+                    '1024x768',
+                    '1280x720',
+                    '1920x1080'
+                ];
+
+                resolutionOptions.forEach(function (resolution)
                 {
                     let opt = document.createElement('option');
-                    opt.setAttribute('value', resolutionsSelect[key]);
-                    opt.innerHTML = key;
+                    opt.setAttribute('value', resolution);
+                    opt.innerHTML = resolution;
                     resolutions.appendChild(opt);
-                })
-                resolutions.selectedIndex = 0;
+                });
+
+                resolutions.selectedIndex = 2;
             }
 
             async function VideoDeviceSetting()
