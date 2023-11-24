@@ -132,6 +132,9 @@
                 <p>CameraDevice</p>
                 <select id="VideoDevice"></select>
                 <br />
+                <p>Resolution</p>
+                <select id="ResolutionSelect"></select>
+                <br />
                 <input type="button" id="ExecButton" value="Exec" onclick="OnExec();" />
                 <br />
                 <br />
@@ -183,6 +186,20 @@
                     audio.appendChild(opt);
                 })
                 audio.selectedIndex = 0;
+            }
+
+            function ResolutionSetting()
+            {
+                let resolutions = document.getElementById('ResolutionSelect');
+                let resolutionsSelect = { '640x480': '640x480', '800x600': '800x600', '1280x720': '800x600' };
+                Object.keys(resolutionsSelect).forEach(function (key)
+                {
+                    let opt = document.createElement('option');
+                    opt.setAttribute('value', resolutionsSelect[key]);
+                    opt.innerHTML = key;
+                    resolutions.appendChild(opt);
+                })
+                resolutions.selectedIndex = 0;
             }
 
             async function VideoDeviceSetting()
@@ -324,9 +341,21 @@
                 EnableTarget("RecButton", false);
                 AudioSetting();
                 VideoDeviceSetting();
+                ResolutionSetting();
             }
 
             window.addEventListener('load', Init);
+            document.getElementById('ResolutionSelect').addEventListener('change', function ()
+            {
+                let videoElement = document.getElementById('video');
+                let selectedResolution = this.value.split('x');
+
+                let width = selectedResolution[0];
+                let height = selectedResolution[1];
+
+                videoElement.style.width = width + 'px';
+                videoElement.style.height = height + 'px';
+            });
         </script>
     </body>
 
