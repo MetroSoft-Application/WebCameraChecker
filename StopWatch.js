@@ -3,7 +3,7 @@ var state = 'STOP';
 var timer_id;
 
 // ゼロを追加する
-var AddZero = function (value)
+function AddZero(value)
 {
     if (value < 10)
     {
@@ -18,7 +18,7 @@ function TimeClear()
     document.getElementById('time').innerText = '00' + ':' + '00' + ':' + '00';
 }
 
-var GoTimer = function ()
+function GoTimer()
 {
     var now = new Date();
 
