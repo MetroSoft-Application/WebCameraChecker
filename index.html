@@ -14,7 +14,7 @@
         <div class="container">
             <div class="left-column">
                 <p>Audio</p>
-                <select id="Audio"> </select>
+                <select id="Audio"></select>
                 <br />
                 <p>CameraDevice</p>
                 <select id="VideoDevice"></select>
@@ -38,7 +38,7 @@
                 <br />
                 <!--<input type="button" id="RightButton" value="Right" onclick="OnRightRotate();" /><br />
                 <input type="button" id="LeftButton" value="Left" onclick="OnLeftRotate();" /><br />-->
-                <a href="" id="Downloadlink" class="download">Download</a>
+                <a href="" id="Download" class="download">Download</a>
             </div>
             <div class="right-column">
                 <video id="video"></video>
@@ -125,7 +125,7 @@
 
             function OnExec()
             {
-                let anchor = document.getElementById('Downloadlink');
+                let anchor = document.getElementById('Download');
                 anchor.href = "javascript:void(0)";
                 EnableTarget("StopButton", false);
                 TimeClear();
@@ -158,7 +158,7 @@
             {
                 if (videoM.stm != null)
                 {
-                    videoM.StopRecoading();
+                    videoM.StopRecording();
                     Stop();
                 }
                 EnableTarget("StopButton", false);
@@ -192,9 +192,9 @@
                     return;
                 }
                 TimeClear();
-                let anchor = document.getElementById('Downloadlink');
+                let anchor = document.getElementById('Download');
                 anchor.href = "javascript:void(0)";
-                videoM.Recoading();
+                videoM.Recording();
                 Start();
                 EnableTarget("StopButton", true);
                 EnableTarget("RecButton", false);
@@ -210,7 +210,8 @@
                 let dataUrl = videoM.TakeSnapshot();
                 if (!dataUrl)
                 {
-                    return;  // スナップショットの取得に失敗した場合は終了
+                    // スナップショットの取得に失敗した場合は終了
+                    return;
                 }
 
                 // DataURLからBlobを作成
@@ -234,7 +235,7 @@
 
             function Init()
             {
-                let anchor = document.getElementById('Downloadlink');
+                let anchor = document.getElementById('Download');
                 anchor.href = "javascript:void(0)";
                 EnableTarget("StopButton", false);
                 videoM = new VideoManager();

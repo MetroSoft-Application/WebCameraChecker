@@ -22,7 +22,8 @@ class VideoManager
             this.video.srcObject = this.stm;
             this.video.play();
             return true;
-        } catch (e)
+        }
+        catch (e)
         {
             console.log(e);
             return false;
@@ -61,7 +62,14 @@ class VideoManager
             console.error("Video not initialized.");
             return;
         }
-        this.nowAngle = this.nowAngle + cmdAngle;
+
+        this.nowAngle = (this.nowAngle + cmdAngle) % 360;
+        if (this.nowAngle < 0)
+        {
+            // 角度を正の値に保つ
+            this.nowAngle += 360;
+        }
+
         if (this.isMirrored)
         {
             // ミラー反転の状態を保持
@@ -87,22 +95,27 @@ class VideoManager
         canvas.height = this.video.videoHeight;
         let ctx = canvas.getContext('2d');
 
-        // ミラーリングや回転を考慮して描画
         ctx.save();
+        // ミラーリングや回転を考慮して描画
+        // 原点をキャンバスの中心に移動
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(this.nowAngle * Math.PI / 180);
+
         if (this.isMirrored)
         {
             ctx.scale(-1, 1);
-            ctx.translate(-canvas.width, 0);
         }
-        ctx.rotate(this.nowAngle * Math.PI / 180);
-        ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
+
+        // 中心に移動した分だけ、描画位置も調整
+        ctx.drawImage(this.video, -canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
         ctx.restore();
 
         // canvasの内容をDataURLとして返す
         return canvas.toDataURL('image/png');
     }
 
-    Recoading()
+
+    Recording()
     {
         if (this.stm == null)
         {
@@ -126,13 +139,14 @@ class VideoManager
         }.bind(this));
     }
 
-    StopRecoading()
+    StopRecording()
     {
         if (this.recorder != null)
         {
             this.recorder.stop();
             return true;
         }
+
         return false;
     }
 
@@ -142,7 +156,7 @@ class VideoManager
             type: "video/webm"
         });
         let url = URL.createObjectURL(blob);
-        let anchor = document.getElementById('Downloadlink');
+        let anchor = document.getElementById('Download');
         anchor.href = url;
         anchor.download = this.GetNowYMDhmsStr() + ".webm";
     }

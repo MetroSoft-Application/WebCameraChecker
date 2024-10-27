@@ -1,6 +1,6 @@
-var start;
-var state = 'STOP';
-var timer_id;
+let start;
+let state = 'STOP';
+let timer_id;
 
 // ゼロを追加する
 function AddZero(value)
@@ -10,7 +10,7 @@ function AddZero(value)
         value = '0' + value;
     }
     return value;
-};
+}
 
 function TimeClear()
 {
@@ -20,12 +20,12 @@ function TimeClear()
 
 function GoTimer()
 {
-    var now = new Date();
+    let now = new Date();
 
-    var milli = now.getTime() - start.getTime(); // 差をミリ秒で
-    var seconds = Math.floor(milli / 1000); // 秒を取得
-    var minutes = Math.floor(seconds / 60); // 分を取得
-    var hours = Math.floor(minutes / 60); // 時を取得
+    let milli = now.getTime() - start.getTime(); // 差をミリ秒で
+    let seconds = Math.floor(milli / 1000); // 秒を取得
+    let minutes = Math.floor(seconds / 60); // 分を取得
+    let hours = Math.floor(minutes / 60); // 時を取得
 
     milli = ('000' + milli).slice(-3);//ミリ秒の表示桁数指定
 
@@ -54,10 +54,10 @@ function Stop()
 
 function StartOrStopControl()
 {
-    if (state == 'STOP')
+    if (state === 'STOP')
     {
         start = new Date();
-        timer_id = setInterval(goTimer, 10);
+        timer_id = setInterval(GoTimer, 10);
         state = 'RUNNING';
     } else
     {
